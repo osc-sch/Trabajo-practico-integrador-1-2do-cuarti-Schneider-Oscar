@@ -35,7 +35,7 @@ export const createUserValidations = [
         .withMessage('La contraseña debe tener un mínimo de 8 caracteres.')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
         .withMessage('La contraseña debe contener al menos una letra minúscula, una mayúscula y un número.'),
-    body('rol')
+    body('role')
         .optional()
         .custom((rol) =>{
             if(rol == "user" || rol == "admin" ){

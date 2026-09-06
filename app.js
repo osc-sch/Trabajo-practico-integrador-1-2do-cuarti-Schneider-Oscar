@@ -3,6 +3,7 @@ import "dotenv/config"
 import { testDB } from "./src/config/database.js"
 import { userRoutes } from "./src/routes/users.routes.js"
 import { profileRoutes } from "./src/routes/profile.routes.js"
+import { articleRoutes } from "./src/routes/article.routes.js"
 
 const app = express()
 const PORT = process.env.PORT || 3006
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 3006
 app.use(express.json())
 app.use(userRoutes)
 app.use(profileRoutes)
+app.use(articleRoutes)
 
 
 async function VerificarDB() {
