@@ -1,14 +1,35 @@
 import { DataTypes } from "sequelize"
 import { sequelize } from "../config/database.js"
+import { TagModel } from "./tag.model.js"
+import { ArticleModel } from "./article.model.js"
 
 export const ArticleTagModel = sequelize.define("Article_Tag",{
     article_id:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        allowNull:false,
+        references:{
+            model:'Articles',
+            key:"id"
+        }
     },
     tag_id:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        allowNull:false,
+        references:{
+            model:'Tags',
+            key:"id"
+        }
     }
 },{})
 
+TagModel.belongsToMany(ArticleModel,{
+    through:ArticleTagModel,
+    foreignKey: 'tag_id',
+    as:'articles'
+})
+
+ArticleModel.belongsToMany(TagModel,{
+    through:ArticleTagModel,
+    foreignKey:'article_id',
+    as:'tags'
+})
