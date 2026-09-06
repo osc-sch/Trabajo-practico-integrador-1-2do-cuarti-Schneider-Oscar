@@ -4,6 +4,13 @@ import { TagModel } from "./tag.model.js"
 import { ArticleModel } from "./article.model.js"
 
 export const ArticleTagModel = sequelize.define("Article_Tag",{
+    id:{
+        type:DataTypes.INTEGER,
+        unique:true,
+        allowNull:false,
+        primaryKey:true,
+        autoIncrement:true
+    },
     article_id:{
         type:DataTypes.INTEGER,
         allowNull:false,
