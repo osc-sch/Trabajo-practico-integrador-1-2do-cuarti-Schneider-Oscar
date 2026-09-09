@@ -37,10 +37,8 @@ export const registerValidations = [
         .withMessage('La contraseña debe contener al menos una letra minúscula, una mayúscula y un número.'),
     body('role')
         .optional()
-        .custom((rol) =>{
-            if(rol == "user" || rol == "admin" ){
-                console.log('Tiene acceso')
-            }else{
+        .custom((role) =>{
+            if(role !== "user" && role !== "admin" ){
                 throw new Error("El rol permitido debe ser 'user' o 'admin'")
             }
             return true

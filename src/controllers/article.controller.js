@@ -15,6 +15,23 @@ export const createArticle = async (req,res)=>{
     
 }
 
+export const getAllMyArticles = async (req,res) =>{
+    try {
+
+        const { user_id, rol } = req.userData
+
+        if (rol !== "admin" && rol !== "user") {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
+
+        const articles = await ArticleModel.findAll({where:{user_id}})
+
+        return res.status(200).json({articles})
+    } catch (error) {
+        return res.status(500).json({message:"Ocurrio un error al extraer los articulos",error})
+    }
+}
+
 export const getAllArticles = async (req,res) =>{
     try {
         const articles = await ArticleModel.findAll()
@@ -34,17 +51,45 @@ export const getArticleByPK = async (req,res) =>{
     }
 }
 
+export const getMyArticleByPK = async (req,res) =>{
+    try {
+
+        const { user_id, rol } = req.userData
+
+        if (rol !== "admin" && rol !== "user") {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
+
+        const { id } = req.params
+        console.log(id)
+        const article = await ArticleModel.findAll({where:{user_id,id}})
+        return res.status(200).json({article})
+    } catch (error) {
+        return res.status(500).json({message:"Ocurrio un error al extraer el articulo",error})
+    }
+}
+
 export const updateArticle = async (req,res) =>{
     try {
+
+        const {user_id,rol} = req.userData
+
+        if (rol !== 'admin') {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
+
         const dataValidated = matchedData(req,{locations:['body']})
         const {id} =  matchedData(req,{locations:['params']})
 
-        console.log(id)
-
         const articleExist = await ArticleModel.findByPk(id)
 
+        
         if (!articleExist) {
             return res.status(404).json({message:"articulo no encontrado"})
+        }
+        
+        if (articleExist.user_id !== user_id) {
+            return res.status(401).json({message:"usuario no autorizado"})
         }
 
         const article = await articleExist.update(dataValidated)
@@ -58,12 +103,18 @@ export const updateArticle = async (req,res) =>{
 export const deleteArticle = async (req,res) =>{
     try {
 
+        const {user_id,rol} = req.userData
+
         const {id} = req.params
 
         const articleExist = await ArticleModel.findByPk(id)
 
         if (!articleExist) {
             return res.status(404).json({message:"articulo no encontrado"})
+        }
+
+        if (articleExist.user_id !== user_id || rol !== 'admin') {
+            return res.status(401).json({message:"usuario no autorizado"})
         }
 
         const article = await articleExist.destroy()

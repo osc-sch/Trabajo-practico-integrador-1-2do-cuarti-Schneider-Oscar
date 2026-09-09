@@ -1,9 +1,19 @@
 import { matchedData } from "express-validator"
 import { TagModel } from "../models/tag.model.js"
+import {ArticleModel} from "../models/article.model.js"
 
 export const createTag = async (req,res)=>{
     try {
+
+        const {rol} = req.userData
+
+        if (rol !== 'admin') {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
+
         const validateData = matchedData(req)
+
+        console.log(validateData)
 
         const newTag = await TagModel.create(validateData)
 
@@ -17,6 +27,13 @@ export const createTag = async (req,res)=>{
 
 export const getAllTags = async (req,res) =>{
     try {
+
+        const {rol} = req.userData
+
+        if (rol !== 'admin' && rol !== 'user') {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
+
         const tags = await TagModel.findAll()
         return res.status(200).json({tags})
     } catch (error) {
@@ -26,8 +43,15 @@ export const getAllTags = async (req,res) =>{
 
 export const getTagByPK = async (req,res) =>{
     try {
+        const {rol} = req.userData
+
+        if (rol !== 'admin') {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
         const {id} = req.params
-        const tag = await TagModel.findByPk(id)
+        const tag = await TagModel.findByPk(id, {
+            include:{model:ArticleModel, as: 'articles'}
+        })
         return res.status(200).json({tag})
     } catch (error) {
         return res.status(500).json({message:"Ocurrio un error al extraer el tag",error})
@@ -36,6 +60,12 @@ export const getTagByPK = async (req,res) =>{
 
 export const updateTag = async (req,res) =>{
     try {
+        const {rol} = req.userData
+
+        if (rol !== 'admin') {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
+
         const dataValidated = matchedData(req,{locations:['body']})
         const {id} =  matchedData(req,{locations:['params']})
 
@@ -55,6 +85,12 @@ export const updateTag = async (req,res) =>{
 
 export const deleteTag = async (req,res) =>{
     try {
+
+        const {rol} = req.userData
+
+        if (rol !== 'admin') {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
 
         const {id} = req.params
 

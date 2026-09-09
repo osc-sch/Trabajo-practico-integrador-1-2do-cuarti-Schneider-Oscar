@@ -11,8 +11,7 @@ export const authMiddleware = (req, res, next) => {
     // Verificar y decodificar token
     const decoded = verifyToken(token);
 
-    // Almacenar datos del usuario
-    req.dataUser = decoded;
+    req.userData = decoded; // Guardar datos del usuario en la solicitud para su uso posterior
     next();
   } catch (error) {
     res.status(500).json({ message: "Error interno del servidor", error });

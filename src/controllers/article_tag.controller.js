@@ -1,11 +1,28 @@
 import { matchedData } from "express-validator"
 import { ArticleTagModel } from "../models/article_tag.model.js"
+import { ArticleModel } from "../models/article.model.js"
 
 export const createArticleTag = async (req,res) => {
     try {
-        const validateData = matchedData(req)
+        const {user_id,rol} = req.userData
 
-        await ArticleTagModel.create(validateData)
+        if (rol !== 'admin' && rol !== 'user') {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
+
+        const {article_id, tag_id} = matchedData(req)
+
+        const existArticle = await ArticleModel.findByPk(article_id)
+
+        if (!existArticle) {
+            return res.status(404).json({message:"no existe el articulo"})
+        }
+
+        if (existArticle.user_id !== user_id) {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
+
+        await ArticleTagModel.create({article_id, tag_id})
 
         return res.status(201).json({message:"se agragron los tags al articulo correctamente"})
         
@@ -16,11 +33,24 @@ export const createArticleTag = async (req,res) => {
 
 export const deleteArticleTag = async (req,res) => {
     try {
+
         const {id} = req.params
 
-        console.log(id)
+        const {user_id,rol} = req.userData
 
-        const existArticleTag = await ArticleTagModel.findByPk(id)
+        if (rol !== 'admin' && rol !== 'user') {
+            return res.status(401).json({ message: "usuario no autorizado" })
+        }
+
+        const existArticle = await ArticleModel.findByPk(id)
+
+        if (!existArticle) {
+            return res.status(404).json({message:"no existe el articulo"})
+        }
+
+        if (existArticle.user_id !== user_id) {
+            return res.status(401).json({message:"usuario no autorizado"})
+        }
 
 
         if (!existArticleTag) {

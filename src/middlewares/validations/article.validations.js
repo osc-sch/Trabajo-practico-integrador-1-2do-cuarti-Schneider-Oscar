@@ -35,7 +35,7 @@ export const createArticleValidations = [
             if(!userExist){
                 throw new Error('Usuario no encontrado')
             }else{
-                if(userExist.role != 'user'){
+                if(userExist.role != 'user' && userExist.role != 'admin'){
                     throw new Error('Este usuario no puede publicar un articulo')
                 }
             }
