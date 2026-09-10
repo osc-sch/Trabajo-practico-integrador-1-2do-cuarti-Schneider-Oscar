@@ -54,8 +54,8 @@ export const deleteArticleTag = async (req,res) => {
             return res.status(404).json({message:"no existe el articulo relacionado"})
         }
 
-        if (rol !== 'admin' && existArticle.user_id !== user_id) {
-            return res.status(401).json({message:"usuario no autorizado"})
+        if (existArticle.user_id !== user_id) {
+            return res.status(403).json({message:"solo el autor puede eliminar esta relacion"})
         }
 
         await existArticleTag.destroy()
