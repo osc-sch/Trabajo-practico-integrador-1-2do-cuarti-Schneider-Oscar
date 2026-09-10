@@ -25,10 +25,10 @@ export const getAllMyArticles = async (req,res) =>{
         const { user_id, rol } = req.userData
 
         if (rol !== "admin" && rol !== "user") {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
 
-        const articles = await ArticleModel.findAll({where:{user_id}})
+        const articles = await ArticleModel.findAll({where:{user_id, status: 'published'}})
 
         return res.status(200).json({articles})
     } catch (error) {
@@ -38,7 +38,7 @@ export const getAllMyArticles = async (req,res) =>{
 
 export const getAllArticles = async (req,res) =>{
     try {
-        const articles = await ArticleModel.findAll()
+        const articles = await ArticleModel.findAll({where:{status: 'published'}})
         return res.status(200).json({articles})
     } catch (error) {
         return res.status(500).json({message:"Ocurrio un error al extraer los articulos",error})
@@ -49,6 +49,9 @@ export const getArticleByPK = async (req,res) =>{
     try {
         const {id} = req.params
         const article = await ArticleModel.findByPk(id)
+        if (!article) {
+            return res.status(404).json({message:"articulo no encontrado"})
+        }
         return res.status(200).json({article})
     } catch (error) {
         return res.status(500).json({message:"Ocurrio un error al extraer el articulo",error})
@@ -61,12 +64,14 @@ export const getMyArticleByPK = async (req,res) =>{
         const { user_id, rol } = req.userData
 
         if (rol !== "admin" && rol !== "user") {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
 
         const { id } = req.params
-        console.log(id)
-        const article = await ArticleModel.findAll({where:{user_id,id}})
+        const article = await ArticleModel.findOne({where:{user_id,id, status: 'published'}})
+        if (!article) {
+            return res.status(404).json({message:"articulo no encontrado"})
+        }
         return res.status(200).json({article})
     } catch (error) {
         return res.status(500).json({message:"Ocurrio un error al extraer el articulo",error})
@@ -89,7 +94,7 @@ export const updateArticle = async (req,res) =>{
         }
         
         if (rol !== 'admin' && articleExist.user_id !== user_id) {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
 
         const article = await articleExist.update(dataValidated)
@@ -114,7 +119,7 @@ export const deleteArticle = async (req,res) =>{
         }
 
         if (rol !== 'admin' && articleExist.user_id !== user_id) {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
 
         const article = await articleExist.destroy()

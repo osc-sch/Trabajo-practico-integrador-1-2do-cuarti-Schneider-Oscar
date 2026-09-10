@@ -74,6 +74,10 @@ export const updateUser = async (req,res) =>{
             return res.status(404).json({message:"usuario no encontrado"})
         }
 
+        if (dataValidated.password) {
+            dataValidated.password = await hashPassword(dataValidated.password)
+        }
+
         const user = await userExist.update(dataValidated)
         return res.status(200).json({message:"Usuario actualizado exitosamente ",user})
 

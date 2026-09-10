@@ -9,9 +9,9 @@ export const createUserValidations = [
         .withMessage('El user name debe tener entre 20 y 30 caracteres')
         .isAlphanumeric()
         .withMessage('El user name debe ser alfanumerico obligatoriamente')
-        .custom(async (username) =>{
+        .custom(async (username, { req }) =>{
             const existUsername = await UserModel.findOne({where:{username}})
-            if (existUsername) {
+            if (existUsername && String(existUsername.id) !== String(req.params.id)) {
                 throw new Error('Ese nombre de usuario ya esta en uso')
             }
             return true
@@ -21,9 +21,9 @@ export const createUserValidations = [
         .withMessage('El correo electrónico es obligatorio.')
         .isEmail()
         .withMessage('El formato del email no es válido.')
-        .custom(async (email) => {
+        .custom(async (email, { req }) => {
             const existEmail = await UserModel.findOne({where:{email}})
-            if (existEmail) {
+            if (existEmail && String(existEmail.id) !== String(req.params.id)) {
                 throw new Error('Ese correo ya esta registrado')
             }
             return true;
@@ -65,9 +65,9 @@ export const updateUserValidations = [
         .withMessage('El user name debe tener entre 20 y 30 caracteres')
         .isAlphanumeric()
         .withMessage('El user name debe ser alfanumerico obligatoriamente')
-        .custom(async (username) =>{
+        .custom(async (username, { req }) =>{
             const existUsername = await UserModel.findOne({where:{username}})
-            if (existUsername) {
+            if (existUsername && String(existUsername.id) !== String(req.params.id)) {
                 throw new Error('Ese nombre de usuario ya esta en uso')
             }
             return true
@@ -76,9 +76,9 @@ export const updateUserValidations = [
         .optional()
         .isEmail()
         .withMessage('El formato del email no es válido.')
-        .custom(async (email) => {
+        .custom(async (email, { req }) => {
             const existEmail = await UserModel.findOne({where:{email}})
-            if (existEmail) {
+            if (existEmail && String(existEmail.id) !== String(req.params.id)) {
                 throw new Error('Ese correo ya esta registrado')
             }
             return true;
@@ -89,7 +89,7 @@ export const updateUserValidations = [
         .withMessage('La contraseña debe tener un mínimo de 8 caracteres.')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
         .withMessage('La contraseña debe contener al menos una letra minúscula, una mayúscula y un número.'),
-    body('rol')
+    body('role')
         .optional()
         .custom((rol) =>{
             if(rol == "user" || rol == "admin" ){

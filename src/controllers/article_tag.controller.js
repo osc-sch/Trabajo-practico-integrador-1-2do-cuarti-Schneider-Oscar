@@ -10,7 +10,7 @@ export const createArticleTag = async (req,res) => {
             return res.status(401).json({message:"usuario no autorizado"})
         }
 
-        const {article_id, tag_id} = matchedData(req)
+        const {article_id, tag_id} = matchedData(req, { locations: ['body'] })
 
         const existArticle = await ArticleModel.findByPk(article_id)
 
