@@ -59,6 +59,8 @@ export const login = async (req,res) =>{
     // Enviar token como cookie
     res.cookie("token", token, {
       httpOnly: true, // No accesible desde JavaScript
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
       maxAge: 1000 * 60 * 60, // 1 hora
     });
 
@@ -72,4 +74,37 @@ export const login = async (req,res) =>{
 export const logout = (req,res) =>{
   res.clearCookie("token"); // Eliminar cookie del navegador
   return res.json({ message: "Logout exitoso" });
+}
+
+export const getAuthenticatedProfile = async (req, res) => {
+  try {
+    const profile = await ProfileModel.findOne({
+      where: { user_id: req.userData.user_id },
+      include: { model: UserModel, as: 'user', attributes: { exclude: ['password'] } }
+    })
+
+    if (!profile) {
+      return res.status(404).json({ message: 'Perfil no encontrado' })
+    }
+
+    return res.status(200).json({ profile })
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al obtener el perfil', error })
+  }
+}
+
+export const updateAuthenticatedProfile = async (req, res) => {
+  try {
+    const data = matchedData(req, { locations: ['body'] })
+    const profile = await ProfileModel.findOne({ where: { user_id: req.userData.user_id } })
+
+    if (!profile) {
+      return res.status(404).json({ message: 'Perfil no encontrado' })
+    }
+
+    const updatedProfile = await profile.update(data)
+    return res.status(200).json({ message: 'Perfil actualizado exitosamente', profile: updatedProfile })
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al actualizar el perfil', error })
+  }
 }

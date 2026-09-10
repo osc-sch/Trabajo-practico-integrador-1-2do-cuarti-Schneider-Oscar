@@ -1,5 +1,6 @@
 import express from "express"
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import "dotenv/config"
 import { testDB } from "./src/config/database.js"
 import { userRoutes } from "./src/routes/users.routes.js"
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 3006
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors({ origin: true, credentials: true }))
 app.use(userRoutes)
 app.use(profileRoutes)
 app.use(articleRoutes)
