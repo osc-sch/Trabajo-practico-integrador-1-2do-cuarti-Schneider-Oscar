@@ -74,10 +74,6 @@ export const updateArticle = async (req,res) =>{
 
         const {user_id,rol} = req.userData
 
-        if (rol !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
-        }
-
         const dataValidated = matchedData(req,{locations:['body']})
         const {id} =  matchedData(req,{locations:['params']})
 
@@ -88,7 +84,7 @@ export const updateArticle = async (req,res) =>{
             return res.status(404).json({message:"articulo no encontrado"})
         }
         
-        if (articleExist.user_id !== user_id) {
+        if (rol !== 'admin' && articleExist.user_id !== user_id) {
             return res.status(401).json({message:"usuario no autorizado"})
         }
 
@@ -113,7 +109,7 @@ export const deleteArticle = async (req,res) =>{
             return res.status(404).json({message:"articulo no encontrado"})
         }
 
-        if (articleExist.user_id !== user_id || rol !== 'admin') {
+        if (rol !== 'admin' && articleExist.user_id !== user_id) {
             return res.status(401).json({message:"usuario no autorizado"})
         }
 

@@ -6,12 +6,6 @@ import { hashPassword } from "../helpers/bcript.helper.js"
 
 export const createUser = async (req,res)=>{
     try {
-        const {rol} = req.userData
-
-        if (rol !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
-        }
-
         const {username,email,password,role,...dataProfile} = matchedData(req,{locations:['body']})
          
         const hashedPassword = await hashPassword(password)
@@ -40,11 +34,6 @@ export const createUser = async (req,res)=>{
 
 export const getAllUsers = async (req,res) =>{
     try {
-        const {role} = req.userData
-
-        if (role !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
-        }
         const users = await UserModel.findAll({
             include: { model: ProfileModel, as: 'profile' },
             attributes: { exclude: ['password'] }
@@ -57,13 +46,6 @@ export const getAllUsers = async (req,res) =>{
 
 export const getUserByPK = async (req,res) =>{
     try {
-
-        const {role} = req.userData
-
-        if (role !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
-        }
-
         const {id} = req.params
         const user = await UserModel.findByPk(id, {
             include: [
@@ -81,13 +63,6 @@ export const getUserByPK = async (req,res) =>{
 
 export const updateUser = async (req,res) =>{
     try {
-
-        const {role} = req.userData
-
-        if (role !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
-        }
-
         const dataValidated = matchedData(req,{locations:['body']})
         const {id} =  matchedData(req,{locations:['params']})
 
@@ -109,13 +84,6 @@ export const updateUser = async (req,res) =>{
 
 export const deleteUser = async (req,res) =>{
     try {
-
-        const {role} = req.userData
-
-        if (role !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
-        }
-
         const {id} = req.params
 
         const userExist = await UserModel.findByPk(id)
