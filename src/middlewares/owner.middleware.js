@@ -23,7 +23,7 @@ export const ownerMiddleware = async (req, res, next) => {
             return res.status(404).json({ message: "artículo no encontrado" })
         }
 
-            if (rol !== 'admin' && existArticle.user_id !== user_id) {
+        if (rol !== 'admin' && existArticle.user_id !== user_id) {
             return res.status(403).json({ message: "usuario no autorizado" })
         }
 

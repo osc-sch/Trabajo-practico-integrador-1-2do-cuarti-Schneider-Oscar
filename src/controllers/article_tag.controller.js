@@ -4,11 +4,7 @@ import { ArticleModel } from "../models/article.model.js"
 
 export const createArticleTag = async (req,res) => {
     try {
-        const {user_id,rol} = req.userData
-
-        if (rol !== 'admin' && rol !== 'user') {
-            return res.status(401).json({message:"usuario no autorizado"})
-        }
+        const { user_id } = req.userData
 
         const {article_id, tag_id} = matchedData(req, { locations: ['body'] })
 
@@ -36,11 +32,7 @@ export const deleteArticleTag = async (req,res) => {
 
         const {id} = req.params
 
-        const {user_id,rol} = req.userData
-
-        if (rol !== 'admin' && rol !== 'user') {
-            return res.status(401).json({ message: "usuario no autorizado" })
-        }
+        const { user_id } = req.userData
 
         const existArticleTag = await ArticleTagModel.findByPk(id)
 

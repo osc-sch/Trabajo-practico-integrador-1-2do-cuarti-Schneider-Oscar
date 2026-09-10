@@ -4,13 +4,6 @@ import {ArticleModel} from "../models/article.model.js"
 
 export const createTag = async (req,res)=>{
     try {
-
-        const {rol} = req.userData
-
-        if (rol !== 'admin') {
-            return res.status(403).json({message:"usuario no autorizado"})
-        }
-
         const validateData = matchedData(req)
 
         console.log(validateData)
@@ -27,13 +20,6 @@ export const createTag = async (req,res)=>{
 
 export const getAllTags = async (req,res) =>{
     try {
-
-        const {rol} = req.userData
-
-        if (rol !== 'admin' && rol !== 'user') {
-            return res.status(403).json({message:"usuario no autorizado"})
-        }
-
         const tags = await TagModel.findAll()
         return res.status(200).json({tags})
     } catch (error) {
@@ -43,11 +29,6 @@ export const getAllTags = async (req,res) =>{
 
 export const getTagByPK = async (req,res) =>{
     try {
-        const {rol} = req.userData
-
-        if (rol !== 'admin') {
-            return res.status(403).json({message:"usuario no autorizado"})
-        }
         const {id} = req.params
         const tag = await TagModel.findByPk(id, {
             include:{model:ArticleModel, as: 'articles'}
@@ -63,12 +44,6 @@ export const getTagByPK = async (req,res) =>{
 
 export const updateTag = async (req,res) =>{
     try {
-        const {rol} = req.userData
-
-        if (rol !== 'admin') {
-            return res.status(403).json({message:"usuario no autorizado"})
-        }
-
         const dataValidated = matchedData(req,{locations:['body']})
         const {id} =  matchedData(req,{locations:['params']})
 
@@ -88,13 +63,6 @@ export const updateTag = async (req,res) =>{
 
 export const deleteTag = async (req,res) =>{
     try {
-
-        const {rol} = req.userData
-
-        if (rol !== 'admin') {
-            return res.status(403).json({message:"usuario no autorizado"})
-        }
-
         const {id} = req.params
 
         const tagExist = await TagModel.findByPk(id)

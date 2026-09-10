@@ -22,11 +22,7 @@ export const createArticle = async (req,res)=>{
 export const getAllMyArticles = async (req,res) =>{
     try {
 
-        const { user_id, rol } = req.userData
-
-        if (rol !== "admin" && rol !== "user") {
-            return res.status(403).json({message:"usuario no autorizado"})
-        }
+        const { user_id } = req.userData
 
         const articles = await ArticleModel.findAll({where:{user_id, status: 'published'}})
 
@@ -61,11 +57,7 @@ export const getArticleByPK = async (req,res) =>{
 export const getMyArticleByPK = async (req,res) =>{
     try {
 
-        const { user_id, rol } = req.userData
-
-        if (rol !== "admin" && rol !== "user") {
-            return res.status(403).json({message:"usuario no autorizado"})
-        }
+        const { user_id } = req.userData
 
         const { id } = req.params
         const article = await ArticleModel.findOne({where:{user_id,id, status: 'published'}})
@@ -81,8 +73,6 @@ export const getMyArticleByPK = async (req,res) =>{
 export const updateArticle = async (req,res) =>{
     try {
 
-        const {user_id,rol} = req.userData
-
         const { user_id: ignoredUserId, ...dataValidated } = matchedData(req,{locations:['body']})
         const {id} =  matchedData(req,{locations:['params']})
 
@@ -93,10 +83,6 @@ export const updateArticle = async (req,res) =>{
             return res.status(404).json({message:"articulo no encontrado"})
         }
         
-        if (rol !== 'admin' && articleExist.user_id !== user_id) {
-            return res.status(403).json({message:"usuario no autorizado"})
-        }
-
         const article = await articleExist.update(dataValidated)
         return res.status(200).json({message:"articulo actualizado exitosamente ",article})
 
@@ -108,18 +94,12 @@ export const updateArticle = async (req,res) =>{
 export const deleteArticle = async (req,res) =>{
     try {
 
-        const {user_id,rol} = req.userData
-
         const {id} = req.params
 
         const articleExist = await ArticleModel.findByPk(id)
 
         if (!articleExist) {
             return res.status(404).json({message:"articulo no encontrado"})
-        }
-
-        if (rol !== 'admin' && articleExist.user_id !== user_id) {
-            return res.status(403).json({message:"usuario no autorizado"})
         }
 
         const article = await articleExist.destroy()
