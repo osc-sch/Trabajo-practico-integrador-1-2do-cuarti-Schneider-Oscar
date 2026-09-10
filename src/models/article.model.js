@@ -16,7 +16,7 @@ export const ArticleModel = sequelize.define("Article",{
         allowNull:true
     },
     status:{
-        type:DataTypes.STRING(10),
+        type:DataTypes.ENUM('published', 'archived'),
         allowNull:false,
         defaultValue:"published"
     },
@@ -28,7 +28,9 @@ export const ArticleModel = sequelize.define("Article",{
             key:"id"
         }
     },
-},{})
+},{
+    paranoid: true
+})
 
-ArticleModel.belongsTo(UserModel,{foreignKey:'user_id', as:'author'})
-UserModel.hasMany(ArticleModel,{foreignKey:'user_id', as:'articles'})
+ArticleModel.belongsTo(UserModel,{foreignKey:'user_id', as:'author', onDelete:'CASCADE'})
+UserModel.hasMany(ArticleModel,{foreignKey:'user_id', as:'articles', onDelete:'CASCADE'})

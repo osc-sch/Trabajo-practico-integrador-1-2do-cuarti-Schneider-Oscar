@@ -1,11 +1,11 @@
 export const adminMiddleware = (req, res, next) => { 
     try {
         if (!req.userData) {
-        return res.status(401).json({ message: "usuario no autenticado" })
+            return res.status(401).json({ message: "usuario no autenticado" })
         }
 
         if (req.userData.rol !== 'admin') {
-            return res.status(401).json({ message: "usuario no autorizado, se necesitan permisos de administrador" })
+            return res.status(403).json({ message: "usuario no autorizado, se necesitan permisos de administrador" })
         }
 
         next()

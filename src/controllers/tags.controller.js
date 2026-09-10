@@ -8,7 +8,7 @@ export const createTag = async (req,res)=>{
         const {rol} = req.userData
 
         if (rol !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
 
         const validateData = matchedData(req)
@@ -31,7 +31,7 @@ export const getAllTags = async (req,res) =>{
         const {rol} = req.userData
 
         if (rol !== 'admin' && rol !== 'user') {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
 
         const tags = await TagModel.findAll()
@@ -46,12 +46,15 @@ export const getTagByPK = async (req,res) =>{
         const {rol} = req.userData
 
         if (rol !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
         const {id} = req.params
         const tag = await TagModel.findByPk(id, {
             include:{model:ArticleModel, as: 'articles'}
         })
+        if (!tag) {
+            return res.status(404).json({message:"tag no encontrado"})
+        }
         return res.status(200).json({tag})
     } catch (error) {
         return res.status(500).json({message:"Ocurrio un error al extraer el tag",error})
@@ -63,7 +66,7 @@ export const updateTag = async (req,res) =>{
         const {rol} = req.userData
 
         if (rol !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
 
         const dataValidated = matchedData(req,{locations:['body']})
@@ -89,7 +92,7 @@ export const deleteTag = async (req,res) =>{
         const {rol} = req.userData
 
         if (rol !== 'admin') {
-            return res.status(401).json({message:"usuario no autorizado"})
+            return res.status(403).json({message:"usuario no autorizado"})
         }
 
         const {id} = req.params

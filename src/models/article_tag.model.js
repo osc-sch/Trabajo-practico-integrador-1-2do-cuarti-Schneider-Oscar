@@ -16,7 +16,8 @@ export const ArticleTagModel = sequelize.define("Article_Tag",{
         allowNull:false,
         references:{
             model:'Articles',
-            key:"id"
+            key:"id",
+            onDelete: 'CASCADE'
         }
     },
     tag_id:{
@@ -24,10 +25,13 @@ export const ArticleTagModel = sequelize.define("Article_Tag",{
         allowNull:false,
         references:{
             model:'Tags',
-            key:"id"
+            key:"id",
+            onDelete: 'CASCADE'
         }
     }
-},{})
+},{
+    indexes: [{ unique: true, fields: ['article_id', 'tag_id'] }]
+})
 
 TagModel.belongsToMany(ArticleModel,{
     through:ArticleTagModel,

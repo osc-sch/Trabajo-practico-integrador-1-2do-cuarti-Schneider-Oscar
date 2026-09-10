@@ -9,7 +9,7 @@ export const ownerMiddleware = async (req, res, next) => {
         const { user_id, rol } = req.userData
         
         if (rol !== 'admin' && rol !== 'user') {
-            return res.status(401).json({ message: "usuario no autorizado" })
+            return res.status(403).json({ message: "usuario no autorizado" })
         }
 
         const articleId = req.params.id ?? req.body.article_id
@@ -24,7 +24,7 @@ export const ownerMiddleware = async (req, res, next) => {
         }
 
             if (rol !== 'admin' && existArticle.user_id !== user_id) {
-            return res.status(401).json({ message: "usuario no autorizado" })
+            return res.status(403).json({ message: "usuario no autorizado" })
         }
 
         next()

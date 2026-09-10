@@ -1,12 +1,11 @@
 import { body, param } from "express-validator";
-import { UserModel } from "../../models/user.model.js";
 
 export const createArticleValidations = [
     body('title')
         .notEmpty()
         .withMessage('El titulo no debe estar vacio')
-        .isLength({min:3,max:300})
-        .withMessage('El titulo debe tener entre 3 y 300 caracteres'),
+        .isLength({min:3,max:200})
+        .withMessage('El titulo debe tener entre 3 y 200 caracteres'),
     body('content')
         .notEmpty()
         .withMessage('El contenido no debe estar vacio')
@@ -30,11 +29,20 @@ export const createArticleValidations = [
 ]
 
 export const updateArticleValidations = [
-    param('id').notEmpty().withMessage('el ID del articulo no debe estar vacio'),
+    param('id')
+        .isInt({min:1})
+        .withMessage('El ID del articulo debe ser un entero positivo')
+        .custom(async (id) => {
+            const { ArticleModel } = await import('../../models/article.model.js')
+            if (!await ArticleModel.findByPk(id)) {
+                throw new Error('El articulo no existe')
+            }
+            return true
+        }),
     body('title')
         .optional()
-        .isLength({min:3,max:300})
-        .withMessage('El titulo debe tener entre 3 y 300 caracteres'),
+        .isLength({min:3,max:200})
+        .withMessage('El titulo debe tener entre 3 y 200 caracteres'),
     body('content')
         .optional()
         .isLength({min:50})

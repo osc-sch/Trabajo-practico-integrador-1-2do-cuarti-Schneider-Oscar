@@ -8,7 +8,12 @@ import { adminMiddleware } from "../middlewares/admin.middleware.js";
 export const tagRoutes = Router();
 
 tagRoutes.get('/api/tag',authMiddleware,getAllTags)
+tagRoutes.get('/api/tags',authMiddleware,getAllTags)
 tagRoutes.get('/api/tag/:id',authMiddleware,adminMiddleware,getTagByPK)
+tagRoutes.get('/api/tags/:id',authMiddleware,adminMiddleware,getTagByPK)
 tagRoutes.post('/api/tag',authMiddleware,adminMiddleware,createTagValidations,validate,createTag)
+tagRoutes.post('/api/tags',authMiddleware,adminMiddleware,createTagValidations,validate,createTag)
 tagRoutes.put('/api/tag/:id',authMiddleware,adminMiddleware,updateTagValidations,validate,updateTag)
+tagRoutes.put('/api/tags/:id',authMiddleware,adminMiddleware,updateTagValidations,validate,updateTag)
 tagRoutes.delete('/api/tag/:id',authMiddleware,adminMiddleware,deleteTag)
+tagRoutes.delete('/api/tags/:id',authMiddleware,adminMiddleware,deleteTag)
