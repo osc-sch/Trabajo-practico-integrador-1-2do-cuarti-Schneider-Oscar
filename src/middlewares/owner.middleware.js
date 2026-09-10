@@ -1,5 +1,4 @@
 import { ArticleModel } from "../models/article.model.js"
-import { ArticleTagModel } from "../models/article_tag.model.js"
 
 export const ownerMiddleware = async (req, res, next) => { 
     try {

@@ -27,21 +27,6 @@ export const createArticleValidations = [
             }
             return true
         }),
-    body('user_id')
-        .notEmpty()
-        .withMessage('El ID del usuario no debe estar vacio')
-        .custom( async (user_id) =>{
-            const userExist = await UserModel.findByPk(user_id)
-            if(!userExist){
-                throw new Error('Usuario no encontrado')
-            }else{
-                if(userExist.role != 'user' && userExist.role != 'admin'){
-                    throw new Error('Este usuario no puede publicar un articulo')
-                }
-            }
-
-            return true;
-        })
 ]
 
 export const updateArticleValidations = [
@@ -68,18 +53,4 @@ export const updateArticleValidations = [
             }
             return true
         }),
-    body('user_id')
-        .optional()
-        .custom( async (user_id) =>{
-            const userExist = await UserModel.findByPk(user_id)
-            if(!userExist){
-                throw new Error('Usuario no encontrado')
-            }else{
-                if(userExist.role != 'user'){
-                    throw new Error('Este usuario no puede publicar un articulo')
-                }
-            }
-
-            return true;
-        })
 ]

@@ -3,9 +3,13 @@ import { ArticleModel } from "../models/article.model.js"
 
 export const createArticle = async (req,res)=>{
     try {
-        const validateData = matchedData(req)
+        const { user_id: ignoredUserId, ...articleData } = matchedData(req)
+        const { user_id } = req.userData
 
-        const newArticle = await ArticleModel.create(validateData)
+        const newArticle = await ArticleModel.create({
+            ...articleData,
+            user_id
+        })
 
         return res.status(201).json({message:"Exito al crear un articulo", article:newArticle})
 
@@ -74,7 +78,7 @@ export const updateArticle = async (req,res) =>{
 
         const {user_id,rol} = req.userData
 
-        const dataValidated = matchedData(req,{locations:['body']})
+        const { user_id: ignoredUserId, ...dataValidated } = matchedData(req,{locations:['body']})
         const {id} =  matchedData(req,{locations:['params']})
 
         const articleExist = await ArticleModel.findByPk(id)
